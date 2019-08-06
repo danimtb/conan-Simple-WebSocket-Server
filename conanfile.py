@@ -16,7 +16,6 @@ class SimpleWebSocketServerConan(ConanFile):
     no_copy_source = True
 
     requires = (
-        "asio/1.13.0@bincrafters/stable",
         "OpenSSL/1.1.1c@conan/stable",
     )
     options = {
