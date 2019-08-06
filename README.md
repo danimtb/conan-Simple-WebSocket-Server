@@ -2,7 +2,7 @@
 
 | Bintray | Windows | Linux & macOS |
 |:--------:|:---------:|:-----------------:|
-|[![Download](https://api.bintray.com/packages/bincrafters/public-conan/package_name%3Abincrafters/images/download.svg) ](https://bintray.com/bincrafters/public-conan/package_name%3Abincrafters/_latestVersion)|[![Build status](https://ci.appveyor.com/api/projects/status/github/bincrafters/conan-package_name?svg=true)](https://ci.appveyor.com/project/bincrafters/conan-package_name)|[![Build Status](https://travis-ci.com/bincrafters/conan-package_name.svg)](https://travis-ci.com/bincrafters/conan-package_name)|
+|[![Download](https://api.bintray.com/packages/bincrafters/public-conan/Simple-WebSocket-Server%3Abincrafters/images/download.svg) ](https://bintray.com/bincrafters/public-conan/Simple-WebSocket-Server%3Abincrafters/_latestVersion)|[![Build status](https://ci.appveyor.com/api/projects/status/github/bincrafters/conan-Simple-WebSocket-Server?svg=true)](https://ci.appveyor.com/project/bincrafters/conan-Simple-WebSocket-Server)|[![Build Status](https://travis-ci.com/bincrafters/conan-Simple-WebSocket-Server.svg)](https://travis-ci.com/bincrafters/conan-Simple-WebSocket-Server)|
 
 ## Conan Information
 
@@ -11,6 +11,12 @@ Bincrafters packages can be found in the following public Conan repository:
 [Bincrafters Public Conan Repository on Bintray](https://bintray.com/bincrafters/public-conan)
 
 *Note: You can click the "Set Me Up" button on the Bintray page above for instructions on using packages from this repository.*
+
+
+## Available Options
+| Option | Default | Possible Values |
+| ------ |:------- |:---------------:|
+| use_asio_standalone | True | [True, False] |
 
 ## Issues
 

@@ -2,51 +2,59 @@ from conans import ConanFile, CMake, tools
 import os
 
 
-class LibnameConan(ConanFile):
-    name = "libname"
-    version = "0.0.0"
-    description = "Keep it short"
+class SimpleWebSocketServerConan(ConanFile):
+    name = "Simple-WebSocket-Server"
+    version = "a4d0d064-git"
+    source_sha256 = ""
+    description = "A very simple, fast, multithreaded, platform independent WebSocket (WS) and WebSocket Secure (WSS) server and client library."
     # topics can get used for searches, GitHub topics, Bintray tags etc. Add here keywords about the library
-    topics = ("conan", "libname", "logging")
-    url = "https://github.com/bincrafters/conan-libname"
-    homepage = "https://github.com/original_author/original_lib"
+    topics = ("conan", "Simple-WebSocket-Server", "socket")
+    url = "https://github.com/bincrafters/conan-Simple-WebSocket-Server"
+    homepage = "https://gitlab.com/eidheim/Simple-WebSocket-Server"
     author = "Bincrafters <bincrafters@gmail.com>"
     license = "MIT"  # Indicates license type of the packaged library; please use SPDX Identifiers https://spdx.org/licenses/
-    exports = ["LICENSE.md"]      # Packages the license for the conanfile.py
-    # Remove following lines if the target lib does not use cmake.
-    exports_sources = ["CMakeLists.txt"]
-    generators = "cmake"
+    no_copy_source = True
 
-    # Options may need to change depending on the packaged library.
-    settings = "os", "arch", "compiler", "build_type"
-    options = {"shared": [True, False], "fPIC": [True, False]}
-    default_options = {"shared": False, "fPIC": True}
+    requires = (
+        "asio/1.13.0@bincrafters/stable",
+        "OpenSSL/1.1.1c@conan/stable",
+    )
+    options = {
+        "use_asio_standalone": [True, False],
+    }
+    default_options = {
+        "use_asio_standalone": True,
+    }
+    # Packages the license for the conanfile.py
+    exports = ["LICENSE.md"]
 
     # Custom attributes for Bincrafters recipe conventions
     _source_subfolder = "source_subfolder"
-    _build_subfolder = "build_subfolder"
 
-    requires = (
-        "OpenSSL/1.0.2s@conan/stable",
-        "zlib/1.2.11@conan/stable"
-    )
-
-    def config_options(self):
-        if self.settings.os == 'Windows':
-            del self.options.fPIC
+    def requirements(self):
+        if self.options.use_asio_standalone:
+            self.default_options["asio:standalone"] = True
+            self.requires("asio/1.13.0@bincrafters/stable")
+        else:
+            self.requires("boost_asio/1.69.0@bincrafters/stable")
 
     def source(self):
-        source_url = "https://github.com/libauthor/libname"
-        tools.get("{0}/archive/v{1}.tar.gz".format(source_url, self.version), sha256="Please-provide-a-checksum")
-        extracted_dir = self.name + "-" + self.version
+        if self.version.endswith("-git"):
+            git = tools.Git(folder=self._source_subfolder)
+            git.clone("https://gitlab.com/eidheim/Simple-WebSocket-Server.git", "master")
+            git.checkout(self.version.split('-')[0])
+        else:
+            tools.get(f"https://gitlab.com/eidheim/Simple-WebSocket-Server/-/archive/v{self.version}/Simple-WebSocket-Server-v{self.version}.tar.gz",
+                      sha256=self.source_sha256)
+            extracted_dir = self.name + "-v" + self.version
 
-        # Rename to "source_subfolder" is a convention to simplify later steps
-        os.rename(extracted_dir, self._source_subfolder)
+            # Rename to "source_subfolder" is a convention to simplify later steps
+            os.rename(extracted_dir, self._source_subfolder)
 
     def _configure_cmake(self):
         cmake = CMake(self)
-        cmake.definitions["BUILD_TESTS"] = False  # example
-        cmake.configure(build_folder=self._build_subfolder)
+        cmake.definitions["USE_STANDALONE_ASIO"] = True
+        cmake.configure(source_folder=self._source_subfolder)
         return cmake
 
     def build(self):
@@ -59,13 +67,7 @@ class LibnameConan(ConanFile):
         cmake.install()
         # If the CMakeLists.txt has a proper install method, the steps below may be redundant
         # If so, you can just remove the lines below
-        include_folder = os.path.join(self._source_subfolder, "include")
-        self.copy(pattern="*", dst="include", src=include_folder)
-        self.copy(pattern="*.dll", dst="bin", keep_path=False)
-        self.copy(pattern="*.lib", dst="lib", keep_path=False)
-        self.copy(pattern="*.a", dst="lib", keep_path=False)
-        self.copy(pattern="*.so*", dst="lib", keep_path=False)
-        self.copy(pattern="*.dylib", dst="lib", keep_path=False)
+        self.copy(pattern="*.hpp", dst="include", src=self._source_subfolder)
 
-    def package_info(self):
-        self.cpp_info.libs = tools.collect_libs(self)
+    def package_id(self):
+        self.info.header_only()
