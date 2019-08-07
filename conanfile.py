@@ -34,7 +34,6 @@ class SimpleWebSocketServerConan(ConanFile):
 
     def requirements(self):
         if self.options.use_asio_standalone:
-            self.default_options["asio:standalone"] = True
             self.requires("asio/1.13.0@bincrafters/stable")
         else:
             self.requires("boost_asio/1.69.0@bincrafters/stable")
@@ -54,7 +53,7 @@ class SimpleWebSocketServerConan(ConanFile):
 
     def _configure_cmake(self):
         cmake = CMake(self)
-        cmake.definitions["USE_STANDALONE_ASIO"] = True
+        cmake.definitions["USE_STANDALONE_ASIO"] = self.options.use_asio_standalone
         cmake.configure()
         return cmake
 
