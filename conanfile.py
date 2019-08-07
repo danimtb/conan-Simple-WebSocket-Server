@@ -14,6 +14,8 @@ class SimpleWebSocketServerConan(ConanFile):
     author = "Bincrafters <bincrafters@gmail.com>"
     license = "MIT"  # Indicates license type of the packaged library; please use SPDX Identifiers https://spdx.org/licenses/
     no_copy_source = True
+    generators = "cmake"
+    exports_sources = "CMakeLists.txt"
 
     requires = (
         "OpenSSL/1.1.1c@conan/stable",
@@ -53,7 +55,7 @@ class SimpleWebSocketServerConan(ConanFile):
     def _configure_cmake(self):
         cmake = CMake(self)
         cmake.definitions["USE_STANDALONE_ASIO"] = True
-        cmake.configure(source_folder=self._source_subfolder)
+        cmake.configure()
         return cmake
 
     def build(self):
